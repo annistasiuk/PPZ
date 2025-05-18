@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h1 class="mb-4">Мої плейлисти</h1>
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{% url 'songs:create_playlist' %}" class="btn" style="background-color: mediumpurple; color: white;">
+                <i class="bi bi-plus-circle"></i> Створити новий плейлист
+            </a>
+        </div>
+
+        {% if playlists %}
+            <div class="row">
+                {% for playlist in playlists %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header" style="background-color: #f0e6ff;">
+                                <h5 class="card-title mb-0">{{ playlist.name }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text"><strong>Категорія:</strong> {{ playlist.category.name }}</p>
+                                <p class="card-text"><strong>Кількість пісень:</strong> {{ playlist.songs.count }}</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'songs:playlist_detail' playlist.id %}" class="btn btn-sm" style="background-color: mediumpurple; color: white;">
+                                        Переглянути
+                                    </a>
+                                    <form action="{% url 'songs:remove_playlist' playlist.id %}" method="post" onsubmit="return confirm('Ви дійсно хочете видалити цей плейлист?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Видалити
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <p class="mb-0">У вас ще немає плейлистів. <a href="{% url 'songs:create_playlist' %}">Створити перший плейлист</a>.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}

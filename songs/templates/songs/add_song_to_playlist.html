@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header text-white" style="background-color: mediumpurple;">
+                    <h2 class="mb-0">Додати до плейлиста</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Пісня: {{ song.title }}</h5>
+                        <p class="mb-1"><strong>Виконавець:</strong> {{ song.artist }}</p>
+                        <p class="mb-1"><strong>Альбом:</strong> {{ song.album }}</p>
+                        <p><strong>Жанр:</strong> {{ song.genre.name }}</p>
+                    </div>
+                {% if playlists %}
+                    <form method="post" action="{% url 'songs:add_song_to_playlist' song.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="playlist" class="form-label">Виберіть плейлист:</label>
+                            <select name="playlist" id="playlist" class="form-select" required>
+                                <option value="">-- Виберіть плейлист --</option>
+                                {% for playlist in playlists %}
+                                    <option value="{{ playlist.id }}">{{ playlist.name }} ({{ playlist.category.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn" style="background-color: mediumpurple; color: white;">
+                                Додати до плейлиста
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-0">У вас ще немає плейлистів. <a href="{% url 'songs:create_playlist' %}">Створити плейлист</a> спочатку.</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{% url 'songs:song_detail' song.id %}" class="btn btn-sm" style="background-color: #f0e6ff; color: #6c33c5;">
+                    <i class="bi bi-arrow-left"></i> Назад до пісні
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="hero-section" style="background: linear-gradient(135deg, #9370DB, #6C33C5); padding: 80px 0; color: white;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Музика для кожного моменту</h1>
+                    <p class="lead mb-4">Створюйте свої плейлисти та насолоджуйтесь улюбленою музикою в будь-який час!</p>
+                    <div class="d-flex gap-3">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'songs:playlist_list' %}" class="btn btn-light btn-lg px-4">Мої плейлисти</a>
+                            <a href="{% url 'songs:create_playlist' %}" class="btn btn-outline-light btn-lg px-4">Створити плейлист</a>
+                        {% else %}
+                            <a href="{% url 'users:register' %}" class="btn btn-light btn-lg px-4">Розпочати</a>
+                            <a href="{% url 'users:login' %}" class="btn btn-outline-light btn-lg px-4">Увійти</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="text-center">
+                        <svg width="400" height="300" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Music Icon -->
+                            <circle cx="300" cy="200" r="150" fill="#ffffff" opacity="0.2"/>
+                            <circle cx="300" cy="200" r="120" fill="#ffffff" opacity="0.3"/>
+                            <path d="M380 100 L380 270 C380 300 340 315 310 290 C280 265 280 225 310 200 C330 185 360 185 380 200 L380 130"
+                                  stroke="#ffffff" stroke-width="12" fill="none" stroke-linecap="round"/>
+                            <circle cx="380" cy="100" r="20" fill="#ffffff"/>
+                            <circle cx="260" cy="150" r="15" fill="#ffffff" opacity="0.7"/>
+                            <circle cx="340" cy="250" r="12" fill="#ffffff" opacity="0.7"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="container mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h2 class="display-5 mb-3">Популярні жанри</h2>
+            <p class="lead text-muted">Знайдіть музику за вашими вподобаннями</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for genre in genres %}
+            <div class="col-md-3 mb-4">
+                <a href="{% url 'songs:genre_filter' genre.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm border-0 genre-card" style="transition: transform 0.3s;">
+                        <div class="card-body text-center" style="background-color: #f0e6ff; border-radius: 5px;">
+                            <h5 class="card-title" style="color: #6c33c5;">{{ genre.name }}</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 60px 0;">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="display-5 mb-3">Нещодавно додані</h2>
+                <p class="lead text-muted">Послухайте найсвіжіші треки на нашій платформі</p>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for song in songs|slice:":6" %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header" style="background-color: #f0e6ff;">
+                            <h5 class="card-title mb-0">{{ song.title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Виконавець:</strong> {{ song.artist }}</p>
+                            <p class="card-text"><strong>Альбом:</strong> {{ song.album }}</p>
+                            <p class="card-text"><strong>Жанр:</strong> {{ song.genre.name }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'songs:song_detail' song.id %}" class="btn btn-sm" style="background-color: mediumpurple; color: white;">Деталі</a>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'songs:add_song_to_playlist' song.id %}" class="btn btn-sm btn-outline-primary">
+                                        <span>➕ Додати в плейлист</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'songs:home' %}" class="btn btn-lg" style="background-color: mediumpurple; color: white;">
+                Переглянути всі пісні
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .genre-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+</div>
+{% endblock %}

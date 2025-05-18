@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow">
+                <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: mediumpurple;">
+                    <h2 class="mb-0">{{ playlist.name }}</h2>
+                    <span class="badge bg-light text-dark">{{ playlist.category.name }}</span>
+                </div>
+                <div class="card-body">
+                    {% if playlist.songs.all %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Назва</th>
+                                        <th>Виконавець</th>
+                                        <th>Альбом</th>
+                                        <th>Жанр</th>
+                                        <th>Дії</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for song in playlist.songs.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                <a href="{% url 'songs:song_detail' song.id %}" style="color: #6c33c5; text-decoration: none;">
+                                                    {{ song.title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ song.artist }}</td>
+                                            <td>{{ song.album }}</td>
+                                            <td>
+                                                <span class="badge" style="background-color: #e6d9ff; color: #6c33c5;">
+                                                    {{ song.genre.name }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form action="{% url 'songs:remove_song_from_playlist' playlist.id song.id %}" method="post" onsubmit="return confirm('Видалити пісню з плейлиста?');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-x"></i> Видалити
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            <p class="mb-0">У цьому плейлисті ще немає пісень. Перейдіть до <a href="{% url 'songs:index' %}">списку пісень</a>, щоб додати пісні до плейлиста.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'songs:playlist_list' %}" class="btn btn-sm" style="background-color: #f0e6ff; color: #6c33c5;">
+                            <i class="bi bi-arrow-left"></i> Назад до плейлистів
+                        </a>
+                        <form action="{% url 'songs:remove_playlist' playlist.id %}" method="post" onsubmit="return confirm('Ви дійсно хочете видалити цей плейлист?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Видалити плейлист
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

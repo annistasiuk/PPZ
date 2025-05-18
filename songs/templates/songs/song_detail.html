@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header text-white" style="background-color: mediumpurple;">
+                    <h2 class="mb-0">{{ song.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted">Виконавець:</div>
+                        <div class="col-md-8 fw-bold">{{ song.artist }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted">Альбом:</div>
+                        <div class="col-md-8">{{ song.album }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted">Жанр:</div>
+                        <div class="col-md-8">
+                            <a href="{% url 'songs:genre_filter' song.genre.id %}" class="badge" style="background-color: #e6d9ff; color: #6c33c5; text-decoration: none; padding: 5px 10px; border-radius: 30px;">
+                                {{ song.genre.name }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-muted">Дата релізу:</div>
+                        <div class="col-md-8">{{ song.release_date }}</div>
+                    </div>
+                {% if user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{% url 'songs:add_song_to_playlist' song.id %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Додати до плейлисту
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{% url 'songs:index' %}" class="btn btn-sm" style="background-color: #f0e6ff; color: #6c33c5;">
+                    <i class="bi bi-arrow-left"></i> Назад до списку
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

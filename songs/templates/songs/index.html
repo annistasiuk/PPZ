@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="mb-4">Музична бібліотека</h1>
+            <div class="card mb-4">
+                <div class="card-header bg-purple text-white" style="background-color: mediumpurple;">
+                    <h5 class="mb-0">Жанри</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{% url 'songs:index' %}" class="btn {% if not selected_genre %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            Всі
+                        </a>
+                        {% for genre in genres %}
+                            <a href="{% url 'songs:genre_filter' genre.id %}" class="btn
+                                {% if selected_genre and selected_genre.id == genre.id %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                                {{ genre.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if songs %}
+            {% for song in songs %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header" style="background-color: #f0e6ff;">
+                            <h5 class="card-title mb-0">{{ song.title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Виконавець:</strong> {{ song.artist }}</p>
+                            <p class="card-text"><strong>Альбом:</strong> {{ song.album }}</p>
+                            <p class="card-text"><strong>Жанр:</strong> {{ song.genre.name }}</p>
+                            <p class="card-text"><strong>Дата релізу:</strong> {{ song.release_date }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'songs:song_detail' song.id %}" class="btn btn-sm" style="background-color: mediumpurple; color: white;">Деталі</a>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'songs:add_song_to_playlist' song.id %}" class="btn btn-sm btn-outline-primary">
+                                        <span>➕ Додати в плейлист</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    Пісні не знайдено {% if selected_genre %}в жанрі "{{ selected_genre.name }}"{% endif %}.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
